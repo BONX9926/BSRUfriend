@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+
+import org.jibble.simpleftp.SimpleFTP;
+
+import java.io.File;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -26,7 +31,8 @@ public class SignUpActivity extends AppCompatActivity {
     private String nameString, userString, passString,
             pathImageString, nameImageString;
     private Uri uri;
-    private boolean aBoolean =true;
+    private boolean aBoolean = true;
+    private int anInt = 0;
 
 
     @Override
@@ -43,7 +49,37 @@ public class SignUpActivity extends AppCompatActivity {
 
         //Image Controller
         imageController();
+
+        //RadioController
+
+        radioController();
     } //Main Method
+
+    private void radioController() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButton5:
+                        anInt = 0;
+                        break;
+                    case R.id.radioButton4:
+                        anInt = 1;
+                        break;
+                    case R.id.radioButton3:
+                        anInt = 2;
+                        break;
+                    case R.id.radioButton2:
+                        anInt = 3;
+                        break;
+                    case R.id.radioButton:
+                        anInt = 4;
+                        break;
+
+                }   //switch
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -62,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             //Find Path of Image Choose
             String[] srting = new String[]{MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(uri, srting, null,null,null);
+            Cursor cursor = getContentResolver().query(uri, srting, null, null, null);
 
             if (cursor != null) {
 
@@ -73,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity {
                 pathImageString = uri.getPath();
             }
 
-            Log.d("10febV1", "pathimage ==> "+ pathImageString);
+            Log.d("10febV1", "pathimage ==> " + pathImageString);
 
         } //if
     }   //onActivityResult
@@ -114,12 +150,59 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     //EveryThing OK
 
+
+                    uploadValueToServer();
+
                 }
 
             }   //onClick
         });
 
     }
+
+    private void uploadValueToServer() {
+        try {
+            //upload Image To server
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy
+                    .Builder()
+                    .permitAll()
+                    .build();
+            StrictMode.setThreadPolicy(policy);
+            SimpleFTP simpleFTP = new SimpleFTP();
+            simpleFTP.connect("ftp.swiftcodingthai.com", 21, "bsru@swiftcodingthai.com", "Abc12345");
+            simpleFTP.bin();
+            simpleFTP.cwd("Image_master");
+            simpleFTP.stor(new File(pathImageString));
+            simpleFTP.disconnect();
+
+            //Uploade Text
+            String tag = "10febV2";
+            Log.d(tag, "Name ==> " + nameString);
+            Log.d(tag, "User ==> " + userString);
+            Log.d(tag, "Password ==> " + passString);
+
+            nameImageString = "http://swiftcodingthai.com/bsru/image_Miniball"+ pathImageString.substring(pathImageString.lastIndexOf("/"));
+            Log.d(tag, "Image ==> " + nameImageString);
+            Log.d(tag, "Avatar ==> " + anInt);
+
+            AddValueToUser addValueToUser = new AddValueToUser(SignUpActivity.this,
+                    nameString, userString, passString, nameImageString,
+                    Integer.toString(anInt));
+            addValueToUser.execute("http://swiftcodingthai.com/bsru/add_miniball.php");
+            String s = addValueToUser.get();
+            Log.d(tag, "Result ==> " + s);
+
+            if (Boolean.parseBoolean(s)) {
+                finish();
+            } else {
+                MyAlert myAlert = new MyAlert(SignUpActivity.this);
+                myAlert.myDialog("Connot Upload", "Upload Fail");
+            }
+
+        } catch (Exception e) {
+            Log.d("10febV1", "e upload ==> " + e.toString());
+        }
+    }   //upload
 
     private void bindWidget() {
 
