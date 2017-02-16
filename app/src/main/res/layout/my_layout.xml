@@ -12,14 +12,6 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/linTopService">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/bird48"
-            android:id="@+id/imageView10"
-            android:layout_weight="1"
-            android:layout_margin="5dp" />
-
         <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
@@ -27,7 +19,8 @@
             android:id="@+id/textView2"
             android:textSize="30sp"
             android:layout_centerHorizontal="true"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
     <Button
