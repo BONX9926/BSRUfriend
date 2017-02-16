@@ -7,6 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,9 +18,10 @@ public class MainActivity extends AppCompatActivity {
     private Button sigInButton, signUpButton;
     private EditText userEditText, passEditText;
     private String userString, passString;
-    private String[] loginStrings;
+    private String[] loginStrings = new String[8];
     // static final คือค่าตัวแปรที่ไม่สามารถเปลี่ยนแปลงได้
     private static final String urlPHP = "http://swiftcodingthai.com/bsru/get_user_miniball.php";
+    private boolean aBoolean = true;
 
 
 
@@ -69,6 +74,41 @@ public class MainActivity extends AppCompatActivity {
             getUser.execute(urlPHP);
             String strJSON = getUser.get();
             Log.d("16febV1", "strJSON ==> " + strJSON);
+
+            JSONArray jsonArray = new JSONArray(strJSON);
+            for (int i=0;i<jsonArray.length();i++) {
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (userString.equals(jsonObject.get("User"))) {
+
+                    loginStrings[0] = jsonObject.getString("id");
+                    loginStrings[1] = jsonObject.getString("Name");
+                    loginStrings[2] = jsonObject.getString("User");
+                    loginStrings[3] = jsonObject.getString("Password");
+                    loginStrings[4] = jsonObject.getString("Image");
+                    loginStrings[5] = jsonObject.getString("Avata");
+                    loginStrings[6] = jsonObject.getString("Lat");
+                    loginStrings[7] = jsonObject.getString("Lng");
+
+                    aBoolean = false;
+
+                }
+            }   // Loop for
+
+            if (aBoolean) {
+                //User False
+                MyAlert myAlert = new MyAlert(MainActivity.this);
+                myAlert.myDialog("หา User นี่ไม่เจอ ?", "ไม่มี "+userString+" ในฐานข้อมูลของเรา");
+            } else if (!passString.equals(loginStrings[3])) {
+                //password false
+                MyAlert myAlert = new MyAlert(MainActivity.this);
+                myAlert.myDialog("Password False", "Please Try Again Password False");
+
+            } else {
+                //password True
+                Toast.makeText(MainActivity.this, "Welcome " + loginStrings[1],
+                        Toast.LENGTH_SHORT).show();
+            }
 
 
         } catch (Exception e) {
