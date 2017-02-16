@@ -19,7 +19,7 @@ public class AddValueToUser extends AsyncTask<String, Void, String> {
 
     //Explicit
     private Context context;
-    private String nameString, userString, passString, imageString, avatarString;
+    private String nameString, userString, passString, imageString, avataString;
     private ProgressDialog progressDialog;
 
     public AddValueToUser(Context context,
@@ -27,13 +27,13 @@ public class AddValueToUser extends AsyncTask<String, Void, String> {
                           String userString,
                           String passString,
                           String imageString,
-                          String avatarString) {
+                          String avataString) {
         this.context = context;
         this.nameString = nameString;
         this.userString = userString;
         this.passString = passString;
         this.imageString = imageString;
-        this.avatarString = avatarString;
+        this.avataString = avataString;
 
 
     } //constructor
@@ -58,7 +58,7 @@ public class AddValueToUser extends AsyncTask<String, Void, String> {
                     .add("User", userString)
                     .add("Password", passString)
                     .add("Image", imageString)
-                    .add("Avatar", avatarString)
+                    .add("Avata", avataString)
                     .build();
             Request.Builder builder = new Request.Builder();
             Request request = builder.url(params[0]).post(requestBody).build();

@@ -89,7 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             aBoolean = false;
             uri = data.getData();
-            //SetUP image Choose to UmageView
+            //SetUP image Choose to ImageView
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
                 imageView.setImageBitmap(bitmap);
@@ -142,7 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (nameString.equals("") || userString.equals("") || passString.equals("")) {
                     //True ==> Have Space
                     MyAlert myAlert = new MyAlert(SignUpActivity.this);
-                    myAlert.myDialog("มีช่องว่าง", "กรุรากรอกให้ครบทุกช่องคะ ");
+                    myAlert.myDialog("มีช่องว่าง", "กรุณากรอกให้ครบทุกช่องคะ ");
                 } else if (aBoolean) {
                     //Non Choose image
                     MyAlert myAlert = new MyAlert(SignUpActivity.this);
@@ -188,7 +188,7 @@ public class SignUpActivity extends AppCompatActivity {
             AddValueToUser addValueToUser = new AddValueToUser(SignUpActivity.this,
                     nameString, userString, passString, nameImageString,
                     Integer.toString(anInt));
-            addValueToUser.execute("http://swiftcodingthai.com/bsru/add_miniball.php");
+            addValueToUser.execute("http://swiftcodingthai.com/bsru/add_master.php");
             String s = addValueToUser.get();
             Log.d(tag, "Result ==> " + s);
 
