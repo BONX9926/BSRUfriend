@@ -183,7 +183,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             nameImageString = "http://swiftcodingthai.com/bsru/image_Miniball"+ pathImageString.substring(pathImageString.lastIndexOf("/"));
             Log.d(tag, "Image ==> " + nameImageString);
-            Log.d(tag, "Avatar ==> " + anInt);
+            Log.d(tag, "Avata ==> " + anInt);
 
             AddValueToUser addValueToUser = new AddValueToUser(SignUpActivity.this,
                     nameString, userString, passString, nameImageString,

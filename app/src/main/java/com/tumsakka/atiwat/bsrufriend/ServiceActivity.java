@@ -1,6 +1,7 @@
 package com.tumsakka.atiwat.bsrufriend;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,8 +20,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ServiceActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -65,6 +71,20 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         //My Loop
         myloop();
 
+        //ButtonController
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                aBoolean = false;
+                Intent intent = new Intent(ServiceActivity.this, ListFriendActivity.class);
+                intent.putExtra("Login", loginStrings);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+
     }   //Main Method
 
     private void myloop() {
@@ -73,6 +93,8 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         afterResume();
 
         updateLatLng();
+
+        createMarker();
 
 
         //Delay
@@ -91,6 +113,41 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
 
     }
 
+    private void createMarker() {
+
+        try {
+
+            mMap.clear();
+
+            String urlPHP = "http://swiftcodingthai.com/bsru/get_user_miniball.php";
+            int[] avataInts = new int[]{R.drawable.bird48,R.drawable.doremon48,
+            R.drawable.kon48, R.drawable.nobita48, R.drawable.rat48};
+
+            GetUser getUser = new GetUser(ServiceActivity.this);
+            getUser.execute(urlPHP);
+            String strJSON = getUser.get();
+
+            JSONArray jsonArray = new JSONArray(strJSON);
+            for (int i=0; i<jsonArray.length(); i++) {
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                LatLng latLng = new LatLng(Double.parseDouble(jsonObject.getString("Lat")),
+                        Double.parseDouble(jsonObject.getString("Lng")));
+                mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(avataInts[Integer.parseInt(jsonObject.getString("Avata"))]))
+                .title(jsonObject.getString("Name")));
+
+            }
+
+            getUser.cancel(true);
+
+        } catch (Exception e) {
+            Log.d("17febV3", "e createmarker ==> " + e.toString());
+        }
+
+    } //Create Marker
+
     private void updateLatLng() {
 
         try {
@@ -100,7 +157,7 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
                     Double.toString(userLngADouble));
             boolean b = Boolean.parseBoolean(editLatLng.get());
             Log.d("17febV2", "Result ==> " + b);
-
+            editLatLng.cancel(true);
         } catch (Exception e) {
             Log.d("17febV2", "e update ==> " + e.toString());
         }
