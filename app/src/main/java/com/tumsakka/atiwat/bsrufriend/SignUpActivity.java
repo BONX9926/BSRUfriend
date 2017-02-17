@@ -181,7 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
             Log.d(tag, "User ==> " + userString);
             Log.d(tag, "Password ==> " + passString);
 
-            nameImageString = "http://swiftcodingthai.com/bsru/image_Miniball"+ pathImageString.substring(pathImageString.lastIndexOf("/"));
+            nameImageString = "http://swiftcodingthai.com/bsru/Image_master"+ pathImageString.substring(pathImageString.lastIndexOf("/"));
             Log.d(tag, "Image ==> " + nameImageString);
             Log.d(tag, "Avata ==> " + anInt);
 
